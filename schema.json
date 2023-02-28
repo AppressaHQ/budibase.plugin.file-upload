@@ -19,13 +19,6 @@
       },
       {
         "type": "number",
-        "key": "maxSize",
-        "label": "Max File Size (Bytes)",
-        "max": 1000000000,
-        "min": 0
-      },
-      {
-        "type": "number",
         "key": "maxFiles",
         "label": "Max Number of Files",
         "max": 100,
@@ -37,23 +30,10 @@
         "label": "Accepted File Extensions: (e.g. '.jpg,.png,.pdf')"
       },
       {
-        "type": "boolean",
-        "key": "encodingProtection",
-        "label": "Encoding Protection - Resolves Budibase Bug #8826 For SQL Databases - Recommended",
-        "defaultValue": true
-      },
-      {
-        "type": "boolean",
-        "key": "useBlobURL",
-        "label": "Use BlobURL instead of DataURL for opening files (Removes restriction for files to be opened in iFrame, which could be blocked + shorter URI - Recommended)",
-        "defaultValue": true
-      },
-      {
         "type": "event",
         "key": "onChange",
         "label": "On Change"
       }
-    ],
-    "info": "Created by chungchunwang on GitHub at: https://github.com/chungchunwang/Budibase-File-Upload. You can find detailed instructions there. Please report any issues or feature requests to the GitHub repo (or perhaps star!)."
+    ]
   }
 }
