@@ -27,7 +27,7 @@
     $: formField = formApi?.registerField(
         field,
         "text",
-        0,
+        '',
         false,
         null,
         formStep
@@ -36,6 +36,7 @@
         fieldState = value?.fieldState;
         fieldApi = value?.fieldApi;
     });
+
     $: labelClass =
         labelPos === "above" ? "" : `spectrum-FieldLabel--${labelPos}`;
 
@@ -68,7 +69,6 @@
         archivedFiles = [...files];
 
         try {
-            const values = await Promise.all(Array.from(browseFiles).map((selectedFile) => readFileToLink(selectedFile)));
             files = files.concat(await Promise.all(
                 Array.from(browseFiles)
                     .map(async (selectedFile) => ({
@@ -78,32 +78,17 @@
                         link: (await readFileToLink(selectedFile)).target.result
                     }))
             ));
-            console.log('FILES: ', files);
-            // var fileDataArray = [];
-            // // we can use all Array methods for values
-            // for (let i = 0; i < values.length; i++) {
-            //     let e = values[i];
-            //     // console.log('e.target.result: ', e.target.result);
-            //     const fileData = {
-            //         name: browseFiles[i].name,
-            //         type: browseFiles[i].type,
-            //         size: browseFiles[i].size,
-            //         link: e.target.result,
-            //     };
-            //     // fileData.link is the actual image
-            //     console.log('FILE DATA: ', fileData);
-            //     fileDataArray.push(fileData);
-            // }
-            // files = files.concat(fileDataArray);
 
             browseFiles = [];
             document.getElementById(buttonID).value = null;
             let json = JSON.stringify(files);
 
             const changed = fieldApi.setValue(json);
+
             if (onChange && changed) {
                 onChange({value: json});
             }
+
             archivedFiles = [...files];
         } catch (e) {
             notificationStore.actions.warning("Error reading files. Try again.");
@@ -116,7 +101,7 @@
     //Reads a file and returns a promise that resolves to a link
     function readFileToLink(file) {
         return new Promise((resolve, reject) => {
-            var fileReader = new FileReader();
+            const fileReader = new FileReader();
             fileReader.onload = (e) => resolve(e);
             fileReader.onerror = (e) => reject(e);
             fileReader.readAsDataURL(file);
@@ -132,7 +117,6 @@
     onMount(() => {
         if (fieldState?.value) {
             let jsonValue = fieldState.value;
-            if (jsonValue == "0") return;
 
             files = JSON.parse(jsonValue);
 
@@ -149,19 +133,12 @@
     });
 
     //Opens a file in a new tab.
-    let onLinkClick = (i) => {
-        let title = files[i].title;
-        let link = files[i].link;
-        var iframe =
-            "<html><head> <style>body {margin: 0;} </style><title>Attachment: " +
-            title +
-            "</title><body><iframe width='100%' height='100%' src='" +
-            link +
-            "'></iframe></body>  </html>";
-        var newWindow = window.open();
-        newWindow.document.open();
-        newWindow.document.write(iframe);
-        newWindow.document.close();
+    let onLinkClick = (file) => {
+        const image = new Image();
+        image.src = file.link;
+
+        const w = window.open("");
+        w.document.write(image.outerHTML);
     };
     let deleteButtonClick = (index) => {
         files.splice(index, 1);
@@ -206,7 +183,7 @@
                             >
                             <button
                                     class="file-button file-button-link"
-                                    on:click={() => onLinkClick(i)}
+                                    on:click={() => onLinkClick(file)}
                             >
                                 {file.name}
                             </button>
